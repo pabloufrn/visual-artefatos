@@ -1,10 +1,11 @@
 import json
-from github_dao import GithubDao
-import github_api_csv_util as csv_util
+from github_dao import GithubDao as GDao
+import github_util
 
 config = None
 getters = __import__("repository_getters")
 # github_dao = GithubDao(host,port,username,password)
+gdao = GDao("localhost", "7474", "neo4j", "rootpass")
 
 def carregar_ambiente():
 	with open('config.json') as config_file:  
@@ -23,17 +24,20 @@ def gerar_grafo_completo():
 	repo_iter = iter(Getter(config['repositories']['data']))
 
 	# baixar e salvar as issues
-	no_issues = [["identificador"]]
+	issues = []
 	page = 0
 	stop = False
 	while(not stop):
 		try:
 			repo = next(repo_iter)
-			print(csv_util.list_issues(repo, config['github_token']))
+			issues = github_util.list_issues(repo, config['github_token'])
 		except StopIteration:
 			stop = True 
-
-	# todo: acessar DAO
+			
+	gdao.save_issues(issues)
+	
+def resetar_dados():
+	gdao.clear()
 
 if __name__ == '__main__':
 	print("Esse é apenas um módulo, execute o main.py")

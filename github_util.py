@@ -2,7 +2,7 @@ import requests
 import urllib.parse
 
 def list_issues(repo, token):
-	no_issues = [["identificador"]]
+	issues = []
 	stop = False
 	page = 1
 	while not stop:
@@ -25,12 +25,12 @@ def list_issues(repo, token):
 				stop = True
 			if(len(conteudo) > 0):
 				for issue in conteudo:
-					no = [issue['id']]
-					no_issues.append(no)
+					keys = ('id', 'title', 'user')
+					props = {k:issue[k] for k in keys if k in issue}
+					issues.append(props)
 			else:
 				stop = True
 		else:
 			print("[#] Erro na requisição.")
 		page+=1
-
-	return no_issues
+	return issues

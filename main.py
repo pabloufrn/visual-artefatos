@@ -16,7 +16,7 @@ def menu_principal():
 	if(resposta == '1'):
 		graph_gen.gerar_grafo_completo()
 	elif(resposta == 'r'):
-		print('|#| Opção não disponível.')
+		graph_gen.resetar_dados()
 	elif(resposta == 's'):
 		print('|!| Você saiu do programa.')
 	else:
