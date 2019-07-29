@@ -1,10 +1,14 @@
 import requests
 import urllib.parse
+import logging
+
+logging.basicConfig(filename='log/requests.log', filemode='w+', format='[%(levelname)s] %(message)s')
 
 def list_issues(repo, token):
 	issues = []
 	stop = False
 	page = 1
+	attempt = 0
 	while not stop:
 		per_page = 100
 		params = {
@@ -31,6 +35,10 @@ def list_issues(repo, token):
 			else:
 				stop = True
 		else:
-			print("[#] Erro na requisição.")
+			print("[#] Erro na requisição. Veja a resposta no log.")
+			logging.error('url:{} resposta:{}'.format(url, request.text))
+			if(attempt >= 2):
+				return []
+			attempt += 1
 		page+=1
 	return issues
