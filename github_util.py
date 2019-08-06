@@ -29,7 +29,7 @@ def list_issues(repo, token):
 				stop = True
 			if(len(conteudo) > 0):
 				for issue in conteudo:
-					keys = ('id', 'title', 'user')
+					keys = ('id', 'title','user','html_url','pull_request','url','labels','milestone','assignees')
 					props = {k:issue[k] for k in keys if k in issue}
 					issues.append(props)
 			else:
@@ -42,3 +42,46 @@ def list_issues(repo, token):
 			attempt += 1
 		page+=1
 	return issues
+
+def list_labels(repo, token):
+	labels = []
+	stop = False
+	page = 1
+	attempt = 0
+
+	while not stop:
+		per_page = 100
+		params = {
+			'state': 'all',
+			'page': page,
+			'per_page': per_page,
+			'access_token': token
+		}
+		url = 	'https://api.github.com/repos/{}/labels?'.format(repo)+\
+				urllib.parse.urlencode(params)
+		print(("[/*] requisitando labels:"+\
+	    	"\n\trepo: {}\n\turl:{}").format(repo, url)+"\n[*/]")
+		request = requests.get(url)
+		if request.ok:
+			conteudo = request.json()
+			number_rows = len(conteudo)
+			if(number_rows < per_page):
+				stop = True
+			if(len(conteudo) > 0):
+				for issue in conteudo:
+					keys = ('id', 'name', 'user')
+					props = {k:issue[k] for k in keys if k in issue}
+					issues.append(props)
+			else:
+				stop = True
+		else:
+			print("[#] Erro na requisição. Veja a resposta no log.")
+			logging.error('url:{} resposta:{}'.format(url, request.text))
+			if(attempt >= 2):
+				return []
+			attempt += 1
+		page+=1
+	return issues
+
+
+	

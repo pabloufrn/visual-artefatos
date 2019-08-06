@@ -1,0 +1,8 @@
+User x Pull_request (requested_reviewer)
+Commits x Pull_request (merge_commit_sha)
+Commits x Pull_request (commits_url)
+User x Commit(author_login)
+
+User_External x Commits
+User_External x Issues
+

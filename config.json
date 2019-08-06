@@ -1,6 +1,6 @@
 {
 	"github_username": "pabloufrn",
-	"github_token": "1e6c7c7bfc5180da88ebd2d9b2edbd1f25425bcd",
+	"github_token": "f2e806f338bb0ec71529ddfcfc6a7c3e6a974319",
 	"neo4j": {
 		"user": "neo4j",
 		"pass": "admin",
@@ -14,7 +14,7 @@
 		},
 		{
 			"name": "TxtGetter",
-			"data": ["repositorios.txt"]
+			"data": ["repositorios2.txt"]
 		}
 	]
 }

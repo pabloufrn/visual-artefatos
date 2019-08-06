@@ -35,11 +35,12 @@ def gerar_grafo_completo():
 	while(not stop):
 		try:
 			repo = next(repo_iter)
-			issues += github_util.list_issues(repo, config['github_token'])
+			## todo: verificar se o dado está em cache (fazer o cache util)
+			issues += github_util.list_issues(repo, config.get('github_token', ''))
 		except StopIteration:
 			stop = True 
 	if(len(issues) == 0):
-		print("[!] Não foi possível obter issues. Verifique a existencia de erros no logs.")
+		print("[!] Não foi possível obter issues. Verifique a existencia de erros nos logs.")
 		return
 	gdao.save_issues(issues)
 	
