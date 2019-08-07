@@ -42,13 +42,12 @@ def list_issues(repo, token):
 			attempt += 1
 		page+=1
 	return issues
-
-def list_labels(repo, token):
-	labels = []
+	
+def list_pulls(repo, token):
+	pulls = []
 	stop = False
 	page = 1
 	attempt = 0
-
 	while not stop:
 		per_page = 100
 		params = {
@@ -57,9 +56,9 @@ def list_labels(repo, token):
 			'per_page': per_page,
 			'access_token': token
 		}
-		url = 	'https://api.github.com/repos/{}/labels?'.format(repo)+\
+		url = 	'https://api.github.com/repos/{}/pulls?'.format(repo)+\
 				urllib.parse.urlencode(params)
-		print(("[/*] requisitando labels:"+\
+		print(("[/*] requisitando pulls:"+\
 	    	"\n\trepo: {}\n\turl:{}").format(repo, url)+"\n[*/]")
 		request = requests.get(url)
 		if request.ok:
@@ -68,10 +67,13 @@ def list_labels(repo, token):
 			if(number_rows < per_page):
 				stop = True
 			if(len(conteudo) > 0):
-				for issue in conteudo:
-					keys = ('id', 'name', 'user')
-					props = {k:issue[k] for k in keys if k in issue}
-					issues.append(props)
+				for pull in conteudo:
+					keys = ('id', 'title','user','html_url','url','labels','milestone','assignees', 'requested_reviewers')
+					# DOING
+					props = {k:pull[k] for k in keys if k in pull}
+					# commit: ('sha', 'html_url','url', 'commit','committer','parents')
+					props['commits'] = list_commits_pull(repo, token, pull['commits_url'])
+					pulls.append(props)
 			else:
 				stop = True
 		else:
@@ -81,7 +83,43 @@ def list_labels(repo, token):
 				return []
 			attempt += 1
 		page+=1
-	return issues
-
-
-	
+	return pulls
+def list_commits_pull(repo, token, commits_url):
+	commits = []
+	stop = False
+	page = 1
+	attempt = 0
+	while not stop:
+		per_page = 100
+		params = {
+			'state': 'all',
+			'page': page,
+			'per_page': per_page,
+			'access_token': token
+		}
+		url = 	commits_url+'?'+\
+				urllib.parse.urlencode(params)
+		print(("[/*] requisitando commits:"+\
+	    	"\n\trepo: {}\n\turl:{}").format(repo, url)+"\n[*/]")
+		request = requests.get(url)
+		if request.ok:
+			conteudo = request.json()
+			number_rows = len(conteudo)
+			if(number_rows < per_page):
+				stop = True
+			if(len(conteudo) > 0):
+				for commit in conteudo:
+					keys = ('sha', 'html_url','url', 'commit','author', 'committer','parents')
+					# DOING
+					props = {k:commit[k] for k in keys if k in commit}
+					commits.append(props)
+			else:
+				stop = True
+		else:
+			print("[#] Erro na requisição. Veja a resposta no log.")
+			logging.error('url:{} resposta:{}'.format(url, request.text))
+			if(attempt >= 2):
+				return []
+			attempt += 1
+		page+=1
+	return commits
