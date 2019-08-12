@@ -1,6 +1,6 @@
 {
 	"github_username": "pabloufrn",
-	"github_token": "00e6233f505cb0f37eb0c8041209a059a4d2a4db",
+	"github_token": "1770a8c910e38146ecdef22039ad8f1155223cb9",
 	"neo4j": {
 		"user": "neo4j",
 		"pass": "admin",
@@ -8,10 +8,6 @@
 		"port": "7687"
 	},
 	"getters": [
-		{
-			"name": "ListGetter",
-			"data": ["pabloufrn/web1"]
-		},
 		{
 			"name": "TxtGetter",
 			"data": ["repositorios2.txt"]

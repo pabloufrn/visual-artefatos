@@ -1,7 +1,8 @@
 import requests
 import json
 import csv
-import graph_gen 
+import graph_gen
+import requests_cache 
 
 def menu_principal():
 	print(
@@ -10,6 +11,7 @@ def menu_principal():
 		"----------------------------------\n" \
 		"1) Gerar grafo gerado por issues. \n" \
 		"2) Gerar grafo gerado por pulls.  \n" \
+		"3) Gerar grafo gerado por commits.\n" \
 		"r) Restaurar banco de dados.      \n" \
 		"s) Sair da ferramenta.			   \n" \
 		"----------------------------------")
@@ -18,6 +20,8 @@ def menu_principal():
 		graph_gen.gerar_grafo_issues()
 	elif(resposta == '2'):
 		graph_gen.gerar_grafo_pulls()
+	elif(resposta == '3'):
+		graph_gen.gerar_grafo_commits()
 	elif(resposta == 'r'):
 		graph_gen.resetar_dados()
 	elif(resposta == 's'):
@@ -28,5 +32,6 @@ def menu_principal():
 
 
 if __name__ == '__main__':
+	requests_cache.install_cache('main_cache', expire_after=None)
 	menu_principal()
     

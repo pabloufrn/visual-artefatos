@@ -219,6 +219,58 @@ class GithubDao:
 				tx.create(Relationship(nodei, "CONTÉM", nodecm))
 		tx.commit()
 
+	def save_commits(self, commits): # ('sha', 'url', 'html_url', 'author', 'committer', 'commit', 'parents')
+		self.connect()
+		tx = None
+		try:
+			tx = self.graph.begin()
+		except Exception as e:
+			print("[!] Não foi possível se conectar a base de dados. Motivo: ")
+			print("[-] " + str(e))
+			exit()
+		for commit in commits:
+			nodeua, nodeuc = None, None
+			keys = ('id', 'login', 'url', 'html_url')
+			if(commit['author']):
+				props = {k:commit['author'][k] for k in keys if k in commit['author']}
+				nodeua = Node("user", **props)
+				tx.merge(nodeua, 'user', 'id')
+				props = {k:commit['committer'][k] for k in keys if k in commit['committer']}
+				nodeuc = Node("user", **props)
+				tx.merge(nodeuc, 'user', 'id')
+			else:
+				keys = ('name', 'email')
+				props = {k:commit['commit']['author'][k] for k in keys if k in commit['commit']['author']}
+				nodeua = Node("user", **props)
+				tx.merge(nodeua, 'user', 'email')
+				props = {k:commit['commit']['committer'][k] for k in keys if k in commit['commit']['committer']}
+				nodeuc = Node("user", **props)
+				tx.merge(nodeuc, 'user', 'email')
+			keys = ('sha', 'url', 'html_url')
+			props = {k:commit[k] for k in keys}
+			props['message'] = commit['commit']['message']
+			nodec = Node("commit", **props)
+			tx.merge(nodec, 'commit', 'sha')
+			# Criar parents
+			nodes_parents = []
+			for parent in commit['parents']:
+				props = {'sha':parent['sha']}
+				nodecp = Node('commit', **props)
+				tx.merge(nodecp, 'commit', 'sha')
+				nodes_parents.append(nodecp)
+			# Author e commit
+			if(commit['author']):
+				uac = Relationship(nodeua, "AUTOR_DE", nodec)
+				tx.create(uac)
+			# Committer e commit
+			ucc = Relationship(nodeuc, "FEZ_COMMIT", nodec)
+			tx.create(ucc)
+			# Commit e parents
+			for nodep in nodes_parents:
+				cp = Relationship(nodec, "FILHO_DE", nodep)
+				tx.create(cp)
+		tx.commit()
+
 	def clear(self):
 		self.connect()
 		self.graph.delete_all()
