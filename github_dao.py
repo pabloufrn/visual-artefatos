@@ -62,6 +62,7 @@ class GithubDao:
 					keys = ('id', 'url', 'login', 'html_url')
 					props = {k:issue['milestone']['creator'][k] for k in keys if k in issue['milestone']['creator']}
 					nodemc = Node("user", **props)
+					tx.merge(nodemc, 'user', 'id')
 			# Criar assignees
 			nodes_assignees = []
 			for assignee in issue['assignees']:
@@ -175,7 +176,7 @@ class GithubDao:
 					tx.merge(nodect, 'user', 'id')
 					tx.create(Relationship(nodect, "É_COMMITTER_DE", nodecm))
 				nodes_assignees.append(nodecm)
-			# TODO: Criar a relação entre commits, criar a relação de pull somente com o primeiro commit
+			# TODO: criar a relação de pull somente com o primeiro commit
 			# deletar atributos não primitivos
 			del pull['commits']
 			del pull['labels']

@@ -1,1 +1,1 @@
-e-gov/RIHA-Browser
+servicosgovbr/portal-de-servicos
