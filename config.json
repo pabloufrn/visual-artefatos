@@ -1,6 +1,10 @@
 {
 	"github_username": "pabloufrn",
+<<<<<<< HEAD
 	"github_token": "c6a945d88bc7e59a2eed5ae8830a3a24432ae588",
+=======
+	"github_token": "053d553668854f57103c122a6dde9282ea09a41c",
+>>>>>>> c4c5bedcd6bdd00242993b52de3feff7096eeb9c
 	"neo4j": {
 		"user": "neo4j",
 		"pass": "admin",
