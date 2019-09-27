@@ -1,3 +1,5 @@
+# -*- encoding: utf-8
+
 import requests
 import json
 import csv
@@ -12,6 +14,8 @@ def menu_principal():
 		"1) Gerar grafo gerado por issues. \n" \
 		"2) Gerar grafo gerado por pulls.  \n" \
 		"3) Gerar grafo gerado por commits.\n" \
+		"4) Gerar gráfico de participação  \n" \
+		"em issues.                        \n" \
 		"r) Restaurar banco de dados.      \n" \
 		"s) Sair da ferramenta.			   \n" \
 		"----------------------------------")
@@ -22,6 +26,8 @@ def menu_principal():
 		graph_gen.gerar_grafo_pulls()
 	elif(resposta == '3'):
 		graph_gen.gerar_grafo_commits()
+	elif(resposta == '4'):
+		graph_gen.gerar_grafico_issues_part()
 	elif(resposta == 'r'):
 		graph_gen.resetar_dados()
 	elif(resposta == 's'):
