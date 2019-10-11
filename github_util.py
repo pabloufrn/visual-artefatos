@@ -19,8 +19,8 @@ def list_issues(repo, token):
 		}
 		url = 	'https://api.github.com/repos/{}/issues?'.format(repo)+\
 				urllib.parse.urlencode(params)
-		print(("[/*] requisitando issues:"+\
-	    	"\n\trepo: {}\n\turl:{}").format(repo, url)+"\n[*/]")
+		print(('[/*] requisitando issues:'+\
+	    	'\n\trepo: {}\n\turl:{}').format(repo, url)+'\n[*/]')
 		request = requests.get(url)
 		if request.ok:
 			conteudo = request.json()
@@ -35,7 +35,7 @@ def list_issues(repo, token):
 			else:
 				stop = True
 		else:
-			print("[#] Erro na requisição. Veja a resposta no log.")
+			print('[#] Erro na requisição. Veja a resposta no log.')
 			logging.error('url:{} resposta:{}'.format(url, request.text))
 			if(attempt >= 2):
 				return []
@@ -58,8 +58,8 @@ def list_pulls(repo, token):
 		}
 		url = 	'https://api.github.com/repos/{}/pulls?'.format(repo)+\
 				urllib.parse.urlencode(params)
-		print(("[/*] requisitando pulls:"+\
-	    	"\n\trepo: {}\n\turl:{}").format(repo, url)+"\n[*/]")
+		print(('[/*] requisitando pulls:'+\
+	    	'\n\trepo: {}\n\turl:{}').format(repo, url)+'\n[*/]')
 		request = requests.get(url)
 		if request.ok:
 			conteudo = request.json()
@@ -77,7 +77,7 @@ def list_pulls(repo, token):
 			else:
 				stop = True
 		else:
-			print("[#] Erro na requisição. Veja a resposta no log.")
+			print('[#] Erro na requisição. Veja a resposta no log.')
 			logging.error('url:{} resposta:{}'.format(url, request.text))
 			if(attempt >= 2):
 				return []
@@ -99,8 +99,8 @@ def list_commits_pull(repo, token, commits_url):
 		}
 		url = 	commits_url+'?'+\
 				urllib.parse.urlencode(params)
-		print(("[/*] requisitando commits:"+\
-	    	"\n\trepo: {}\n\turl:{}").format(repo, url)+"\n[*/]")
+		print(('[/*] requisitando commits:'+\
+	    	'\n\trepo: {}\n\turl:{}').format(repo, url)+'\n[*/]')
 		request = requests.get(url)
 		if request.ok:
 			conteudo = request.json()
@@ -116,7 +116,7 @@ def list_commits_pull(repo, token, commits_url):
 			else:
 				stop = True
 		else:
-			print("[#] Erro na requisição. Veja a resposta no log.")
+			print('[#] Erro na requisição. Veja a resposta no log.')
 			logging.error('url:{} resposta:{}'.format(url, request.text))
 			if(attempt >= 2):
 				return []
@@ -138,8 +138,8 @@ def list_commits(repo, token):
 		}
 		url = 	'https://api.github.com/repos/{}/commits?'.format(repo)+\
 				urllib.parse.urlencode(params)
-		print(("[/*] requisitando commits:"+\
-	    	"\n\trepo: {}\n\turl:{}").format(repo, url)+"\n[*/]")
+		print(('[/*] requisitando commits:'+\
+	    	'\n\trepo: {}\n\turl:{}').format(repo, url)+'\n[*/]')
 		request = requests.get(url)
 		if request.ok:
 			conteudo = request.json()
@@ -154,7 +154,7 @@ def list_commits(repo, token):
 			else:
 				stop = True
 		else:
-			print("[#] Erro na requisição. Veja a resposta no log.")
+			print('[#] Erro na requisição. Veja a resposta no log.')
 			logging.error('url:{} resposta:{}'.format(url, request.text))
 			if(attempt >= 2):
 				return []
@@ -178,8 +178,8 @@ def count_events(repo, token, issue_id):
 		}
 		url = 	'https://api.github.com/repos/{}/issues/{}/timeline?'.format(repo, issue_id)+\
 				urllib.parse.urlencode(params)
-		print(("[/*] requisitando events:"+\
-	    	"\n\trepo: {}\n\turl:{}").format(repo, url)+"\n[*/]")
+		print(('[/*] requisitando events:'+\
+	    	'\n\trepo: {}\n\turl:{}').format(repo, url)+'\n[*/]')
 		request = requests.get(url, headers={'Accept': 'application/vnd.github.mockingbird-preview'})
 		if request.ok:
 			conteudo = request.json()
@@ -188,10 +188,49 @@ def count_events(repo, token, issue_id):
 			if(number_rows < per_page):
 				stop = True
 		else:
-			print("[#] Erro na requisição. Veja a resposta no log.")
+			print('[#] Erro na requisição. Veja a resposta no log.')
 			logging.error('url:{} resposta:{}'.format(url, request.text))
 			if(attempt >= 2):
 				return []
 			attempt += 1
 		page+=1
 	return counter
+
+
+def list_file_history(repo, token, path):
+	return get_list(repo, token, f'repos/{repo}/commits', ['commit'], extraparams={'path':path})
+
+def get_list(repo, token, path, keys, headers={}, extraparams = {}):
+	result_list = []
+	stop = False
+	page = 1
+	attempt = 0
+	while not stop:
+		per_page = 100
+		params = {
+			'state': 'all',
+			'page': page,
+			'per_page': per_page,
+			'access_token': token,
+			**extraparams
+		}
+		url = f'https://api.github.com/{path}?{urllib.parse.urlencode(params)}'
+		print(f'[/*] {path}\n\trepo: {repo}\n\turl: {url}\n[*/]')
+		request = requests.get(url, headers=headers)
+		if request.ok:
+			conteudo = request.json()
+			number_rows = len(conteudo)
+			if(len(conteudo) > 0):
+				for item in conteudo:
+					props = {k:item[k] for k in keys if k in item}
+					result_list.append(props)
+			if(number_rows < per_page):
+				stop = True
+		else:
+			print('[#] Erro na requisição. Veja a resposta no log.')
+			logging.error('url:{} resposta:{}'.format(url, request.text))
+			if(attempt >= 2):
+				return []
+			attempt += 1
+		page+=1
+	return result_list

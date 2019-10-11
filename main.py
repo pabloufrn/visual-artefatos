@@ -4,8 +4,19 @@ import requests
 import json
 import csv
 import graph_gen
+import terminal_interface
 import requests_cache 
-
+'''todo
+histórico de alterações: 
+ - A api traz uma lista de eventos de pull requests e issues,
+ mas apresentar de maneira visual é inviável com a visualiza-
+ ção de grafos, pois a apresentação em grafos é acoplada ao
+ neo4j.
+ - É possível também obter historico de arquivo
+Refatorar código do github_util
+ tothink
+ - Usar GraphQL API v4
+'''
 def menu_principal():
 	print(
 		"----------------------------------\n" \
@@ -16,6 +27,7 @@ def menu_principal():
 		"3) Gerar grafo gerado por commits.\n" \
 		"4) Gerar gráfico de participação  \n" \
 		"em issues.                        \n" \
+		"5) Obter histórico de arquivo.    \n" \
 		"r) Restaurar banco de dados.      \n" \
 		"s) Sair da ferramenta.			   \n" \
 		"----------------------------------")
@@ -28,6 +40,8 @@ def menu_principal():
 		graph_gen.gerar_grafo_commits()
 	elif(resposta == '4'):
 		graph_gen.gerar_grafico_issues_part()
+	elif(resposta == '5'):
+		terminal_interface.ver_historico_arquivo()
 	elif(resposta == 'r'):
 		graph_gen.resetar_dados()
 	elif(resposta == 's'):
