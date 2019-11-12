@@ -1,5 +1,6 @@
 import json
 import pandas as pd
+import requests_cache
 from matplotlib.ticker import MaxNLocator
 from github_dao import GithubDao as GDao
 import github_util
@@ -10,10 +11,21 @@ gdao = None
 
 def carregar_ambiente():
 	global config, gdao
-	with open('config.json') as config_file:  
+	with open('config.json') as config_file:
 		config = json.load(config_file)
 	if(config == None):
 		return False
+	# Checar token
+	access_token = config.get('github_token', '')
+	if(not github_util.check_token(config.get('github_token', ''))):
+		token_ok = False
+		while(not token_ok):
+			access_token = input("Token invalido. Cole seu token do github: ")
+			token_ok = github_util.check_token(access_token)
+		config['github_token'] = access_token
+		with open("config.json", "w") as config_file:
+			config_file.write(json.dumps(config, sort_keys=True, indent=4))
+	requests_cache.install_cache('main_cache', expire_after=None)
 	gdao = GDao(config["neo4j"]["host"], config["neo4j"]["port"], config["neo4j"]["user"], config["neo4j"]["pass"])
 	return True
 
@@ -39,12 +51,12 @@ def gerar_grafo_issues():
 			repo = next(repo_iter)
 			issues += github_util.list_issues(repo, config.get('github_token', ''))
 		except StopIteration:
-			stop = True 
+			stop = True
 	if(len(issues) == 0):
 		print("[!] Não foi possível obter issues. Verifique a existencia de erros nos logs.")
 		return
 	gdao.save_issues(issues)
-	
+
 def gerar_grafo_pulls():
 	print("[...] Gerando grafo gerado por pulls")
 	if(not carregar_ambiente()):
@@ -67,7 +79,7 @@ def gerar_grafo_pulls():
 			repo = next(repo_iter)
 			pulls += github_util.list_pulls(repo, config.get('github_token', ''))
 		except StopIteration:
-			stop = True 
+			stop = True
 	if(len(pulls) == 0):
 		print("[!] Não foi possível obter pulls. Verifique a existencia de erros nos logs.")
 		return
@@ -94,7 +106,7 @@ def gerar_grafo_commits():
 			repo = next(repo_iter)
 			commits += github_util.list_commits(repo, config.get('github_token', ''))
 		except StopIteration:
-			stop = True 
+			stop = True
 	if(len(commits) == 0):
 		print("[!] Não foi possível obter commits. Verifique a existencia de erros nos logs.")
 		return
@@ -106,7 +118,7 @@ def resetar_dados():
 		print("[!] Arquivo de configuração não definido.")
 	else:
 		gdao.clear()
-		
+
 def gerar_grafico_issues_part():
 	print("[...] Gerando grafico de popularidade das issues")
 	if(not carregar_ambiente()):
@@ -129,7 +141,7 @@ def gerar_grafico_issues_part():
 			repo = next(repo_iter)
 			issues += github_util.list_issues(repo, config.get('github_token', ''))
 		except StopIteration:
-			stop = True 
+			stop = True
 	if(len(issues) == 0):
 		print("[!] Não foi possível obter issues. Verifique a existencia de erros nos logs.")
 		return

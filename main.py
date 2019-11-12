@@ -5,9 +5,8 @@ import json
 import csv
 import graph_gen
 import terminal_interface
-import requests_cache 
 '''todo
-histórico de alterações: 
+histórico de alterações:
  - A api traz uma lista de eventos de pull requests e issues,
  mas apresentar de maneira visual é inviável com a visualiza-
  ção de grafos, pois a apresentação em grafos é acoplada ao
@@ -50,8 +49,5 @@ def menu_principal():
 		print('|#| Resposta invalida.')
 		return menu_principal()
 
-
 if __name__ == '__main__':
-	requests_cache.install_cache('main_cache', expire_after=None)
 	menu_principal()
-    

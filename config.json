@@ -1,16 +1,18 @@
 {
-	"github_username": "pabloufrn",
-	"github_token": "e2d65e024abcb5680b5cfe35f691e665981b9808",
-	"neo4j": {
-		"user": "neo4j",
-		"pass": "admin",
-		"host": "localhost",
-		"port": "7687"
-	},
-	"getters": [
-		{
-			"name": "TxtGetter",
-			"data": ["repositorios2.txt"]
-		}
-	]
+    "getters": [
+        {
+            "data": [
+                "repositorios2.txt"
+            ],
+            "name": "TxtGetter"
+        }
+    ],
+    "github_token": "4909fd2d86b588e7bd64de4acb6e7a1d19b1b1f6",
+    "github_username": "pabloufrn",
+    "neo4j": {
+        "host": "localhost",
+        "pass": "admin",
+        "port": "7687",
+        "user": "neo4j"
+    }
 }
