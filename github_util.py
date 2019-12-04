@@ -6,7 +6,6 @@ logging.basicConfig(filename='log/requests.log', filemode='w+', format='[%(level
 
 def check_token(token):
 	access_token = token
-	token_ok = False
 	url = f"https://api.github.com/?access_token={access_token}"
 	request = requests.get(url)
 	if(request.status_code == 401):
@@ -16,7 +15,6 @@ def check_token(token):
 	else:
 		print("Erro: falha na requisição para a api. Tente novamente.")
 		exit(1)
-
 
 def list_issues(repo, token):
 	issues = []

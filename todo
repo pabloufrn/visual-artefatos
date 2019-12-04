@@ -1,0 +1,10 @@
+[] Fazer multiplas requisições
+[] Fazer unique para todos os objetos
+[] Usar singleton
+[] Colocar idade do repositório nas informações
+-------------------
+[] Validar getters
+[] Baixar e inicializar o neo4j diretamente no programa.
+[] Abrir o navegador com o neo4j
+-------------------
+[] Usar GraphQL API v4

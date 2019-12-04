@@ -1,0 +1,16 @@
+{
+    "getters": [
+        {
+            "data": [
+                "octocat/Hello-World"
+            ],
+            "name": "ListGetter"
+        }
+    ],
+    "neo4j": {
+        "addr": "localhost",
+        "port": "7687",
+        "user": "neo4j",
+        "dbpw": "admin"
+    }
+}
